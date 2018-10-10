@@ -1,4 +1,5 @@
 # Sound Open Firmware
+TEST 01
 
 ### Status
 [![Build Status](https://travis-ci.org/thesofproject/sof.svg?branch=master)](https://travis-ci.org/thesofproject/sof)
