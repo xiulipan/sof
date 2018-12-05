@@ -2,6 +2,12 @@ sudo: required
 
 language: c
 
+env:
+  global:
+    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+    # via the "travis encrypt" command using the project repo's public key
+    - secure: "HDSwNmrSaiP1nPmUzfJq3QWN2jZ0PUGWxqseL+bZmbC63cS2b6UcPxBQVkUc6vcQJfYsXIGU58QHXPqAEkNI5/4oUoHL5IxFxY6fpKBwyHyPeGendIpYO+EwUiJUDg7BhNFdfTmYytAwW1x9jDVwD/vMjZhp8jDaHfikyc7cUxaJnRTzFMdqsPmw7KyuyDHdGE43a5WIOasV3wJXguwcoKZZKwSQOHU6vdgAlDKVTtombDkDkVweF+RJ34BerTWpNdNalTOHi6UaVxcYArrE1pUW0H/o3U5XFCxZoxGNWvoZmosA+eKbmrlCPVMpBhLa/QFEvNdlkQIr95dszKwsFT9WCr94zniyxt4Dl84jvqY6wy3VW1OTQYscMIxnAzv9nScZTk9LOfCdS+GKCE9FFRFHAtzEzQfvGQsc2FVBEavHFVXJy7Kvk5e1ApK5LB7DA7gxZ96JJKow5iLswAI0utAuOnjsu7qhT1ae3/ynlVe8Q8uyOi560lLPE6uhBJHkXQevze3zel+tU4qLHSHN0o2tfyk2OHe7WXyVCx4ZuEF2MDgOvvVTJdVauoD6t5cz7HtBmMaeWXuH7dCYPQKh4UTst/URw2qDDJQ6w3ZFua3F1tK2MpryfetmdattQEDAdG/HDOkrzl6W9R5cxP6BD9yBHAed96ZWoJf8c2DDKIk="
+
 git:
   depth: false
 
@@ -15,6 +21,17 @@ stages:
 before_install:
   - docker pull xiulipan/sof && docker tag xiulipan/sof sof
   - docker pull xiulipan/sofqemu && docker tag xiulipan/sofqemu sofqemu
+  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+
+addons:
+  coverity_scan:
+    project:
+      name: "xiulipan/sof"
+      description: ""
+      notification_email: xiuli.pan@linux.intel.com
+      build_command_prepend: ./autogen.sh
+      build_command: "./scripts/docker-run.sh ./scripts/xtensa-build-all.sh -l -a"
+      branch_pattern: coverity_scan
 
 jobs:
   include:
