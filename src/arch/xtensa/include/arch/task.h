@@ -146,12 +146,14 @@ static void _irq_task(void *arg)
 		task = container_of(clist, struct task, irq_list);
 		list_item_del(clist);
 
+		/* pre mask the task to avoid task readd in task func */
+		schedule_task_complete(task);
+
 		spin_unlock_irq(&irq_task->lock, flags);
 
-		if (task->func && task->state == TASK_STATE_RUNNING)
+		if (task->func)
 			task->func(task->data);
 
-		schedule_task_complete(task);
 		spin_lock_irq(&irq_task->lock, flags);
 	}
 

@@ -130,6 +130,9 @@ void ipc_platform_do_cmd(struct ipc *ipc)
 done:
 	ipc->host_pending = 0;
 
+	// early set the ipc_task state to be compelted.
+	ipc->ipc_task.state = 4;
+
 	/* write 1 to clear busy, and trigger interrupt to host*/
 	ipc_write(IPC_DIPCT, ipc_read(IPC_DIPCT) |IPC_DIPCT_BUSY );
 

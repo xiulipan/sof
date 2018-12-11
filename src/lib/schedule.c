@@ -253,11 +253,14 @@ static int _schedule_task(struct task *task, uint64_t start, uint64_t deadline)
 	uint32_t flags;
 	uint64_t current;
 	uint64_t ticks_per_ms;
+	struct list_item *tlist;
+	struct task *ttask;
 
 	tracev_pipe("ad!");
 
 	spin_lock_irq(&sch->lock, flags);
 
+#if 0
 	/* is task already running ? - not enough MIPS to complete ? */
 	if (task->state == TASK_STATE_RUNNING) {
 		trace_pipe("tsk");
@@ -271,6 +274,7 @@ static int _schedule_task(struct task *task, uint64_t start, uint64_t deadline)
 		spin_unlock_irq(&sch->lock, flags);
 		return 0;
 	}
+#endif
 
 	/* get the current time */
 	current = platform_timer_get(platform_timer);
@@ -286,6 +290,15 @@ static int _schedule_task(struct task *task, uint64_t start, uint64_t deadline)
 
 	/* calculate deadline - TODO: include MIPS */
 	task->deadline = task->start + ticks_per_ms * deadline / 1000;
+
+	list_for_item(tlist, &sch->list) {
+		ttask = container_of(tlist, struct task, list);
+		if (task == ttask) {
+			trace_pipe_error("tsk");
+			return 0;
+		}
+	}
+
 
 	/* add task to list */
 	list_item_append(&task->list, &sch->list);
@@ -337,8 +350,10 @@ void schedule_task_complete(struct task *task)
 	tracev_pipe("com");
 
 	spin_lock_irq(&sch->lock, flags);
-	task->state = TASK_STATE_COMPLETED;
+	//task->state = TASK_STATE_COMPLETED;
 	spin_unlock_irq(&sch->lock, flags);
+
+	tracev_pipe("coM");
 
 	/* tell any waiter that task has completed */
 	wait_completed(&task->complete);
