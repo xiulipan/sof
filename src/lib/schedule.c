@@ -365,7 +365,7 @@ void schedule(void)
 	struct task *task;
 	uint32_t flags;
 
-	tracev_pipe("sch");
+	//tracev_pipe("sch");
 
 	spin_lock_irq(&sch->lock, flags);
 

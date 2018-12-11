@@ -242,7 +242,8 @@
 /* tracing */
 #define trace_dma(__e)	trace_event(TRACE_CLASS_DMA, __e)
 #define trace_dma_error(__e)	trace_error(TRACE_CLASS_DMA, __e)
-#define tracev_dma(__e)	tracev_event(TRACE_CLASS_DMA, __e)
+#define tracev_dma(__e)
+//tracev_event(TRACE_CLASS_DMA, __e)
 
 /* HW Linked list support, only enabled for APL/CNL at the moment */
 #if defined CONFIG_APOLLOLAKE || defined CONFIG_CANNONLAKE \
@@ -1203,7 +1204,7 @@ static void dw_dma_irq_handler(void *data)
 	if (!status_intr)
 		return;
 
-	tracev_dma("DIr");
+	//tracev_dma("DIr");
 
 	/* get the source of our IRQ. */
 	status_block = dw_read(dma, DW_STATUS_BLOCK);

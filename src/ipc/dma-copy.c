@@ -42,7 +42,8 @@
 /* tracing */
 #define trace_dma(__e)	trace_event(TRACE_CLASS_DMA, __e)
 #define trace_dma_error(__e)	trace_error(TRACE_CLASS_DMA, __e)
-#define tracev_dma(__e)	tracev_event(TRACE_CLASS_DMA, __e)
+#define tracev_dma(__e)
+//tracev_event(TRACE_CLASS_DMA, __e)
 
 #if !defined CONFIG_DMA_GW
 static struct dma_sg_elem *sg_get_elem_at(struct dma_sg_config *host_sg,
