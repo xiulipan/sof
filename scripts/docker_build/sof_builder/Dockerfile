@@ -17,13 +17,6 @@
 FROM ubuntu:18.04
 ARG UID=1000
 
-# Set up proxy from host
-COPY apt.conf /etc/apt/
-ARG host_http_proxy
-ARG host_https_proxy
-ENV http_proxy $host_http_proxy
-ENV https_proxy $host_https_proxy
-
 RUN apt-get -y update && \
 	    apt-get install -y \
 	    	autoconf \
